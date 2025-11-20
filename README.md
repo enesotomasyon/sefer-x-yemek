@@ -1,59 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dijital Menü - Restoran Menü Yönetim Sistemi
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dijital Menü, restoranlar için modern, kullanıcı dostu bir dijital menü yönetim platformudur. Yemek Sepeti tarzında çalışan bu uygulama, restoranların menülerini dijital ortamda sunmalarını sağlar.
 
-## About Laravel
+## 🎨 Renk Paleti
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Primary Orange: `#e84e0f`
+- Primary Yellow: `#f7a600`
+- Gray: `#9d9d9c`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Özellikler
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👥 Rol Sistemi (Spatie Permission)
 
-## Learning Laravel
+#### Admin Özellikleri:
+- ✅ Tüm restoranları yönetme
+- ✅ Restoran abonelik sürelerini değiştirme
+- ✅ İşletmeleri aktifleştirme/pasifleştirme
+- ✅ Kategori oluşturma ve yönetme
+- ✅ Ana sayfa slider kampanyalarını yükleme
+- ✅ Şube onaylarını yönetme
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+#### İşletme Sahibi Özellikleri:
+- ✅ Kendi işletmelerini yönetme
+- ✅ Admin tanımlı kategorilerle ürün ekleme
+- ✅ Şube ekleme (Admin onayına düşer)
+- ✅ QR kod oluşturma
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🏠 Müşteri Arayüzü
 
-## Laravel Sponsors
+- Üst slider kampanya alanı
+- Restoran listesi
+- Slider'dan ürün/restoran menüsüne yönlendirme
+- Kategoriye göre filtrelenmiş ürün listesi
+- Kategoriye uymayan ürünler otomatik "Diğer" kategorisine alınır
+- Ürün detay sayfası (görsel, açıklama, fiyat)
+- Müşteri ziyaret kaydı (basic customer table)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Teknolojiler
 
-### Premium Partners
+- **Framework:** Laravel 12
+- **Authentication:** Laravel Breeze
+- **Permission Management:** Spatie Laravel Permission
+- **QR Code Generator:** SimpleSoftwareIO Simple QR Code
+- **Frontend:** Blade Templates + Tailwind CSS
+- **Database:** MySQL / SQLite
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📦 Kurulum
 
-## Contributing
+### Gereksinimler
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+- MySQL veya SQLite
 
-## Code of Conduct
+### Kurulum Adımları
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Repository'yi klonlayın:
+```bash
+git clone <repository-url>
+cd sefer-x-yemek
+```
 
-## Security Vulnerabilities
+2. Composer bağımlılıklarını kurun:
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. NPM bağımlılıklarını kurun:
+```bash
+npm install
+npm run build
+```
 
-## License
+4. `.env` dosyasını oluşturun:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. Veritabanı ayarlarını yapılandırın (`.env`):
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dijital_menu
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+6. Veritabanını migrate edin ve seed verilerini yükleyin:
+```bash
+php artisan migrate:fresh --seed
+```
+
+7. Storage link'ini oluşturun:
+```bash
+php artisan storage:link
+```
+
+8. Uygulamayı başlatın:
+```bash
+php artisan serve
+```
+
+## 🔐 Varsayılan Kullanıcılar
+
+Seed işlemi sonrası şu kullanıcılar oluşturulur:
+
+**Admin:**
+- Email: `admin@dijitalmenu.com`
+- Password: `password`
+
+**İşletme Sahibi:**
+- Email: `owner@example.com`
+- Password: `password`
+
+## 📁 Proje Yapısı
+
+```
+app/
+├── Http/Controllers/
+│   ├── Admin/           # Admin panel controllers
+│   ├── Owner/           # İşletme sahibi panel controllers
+│   ├── HomeController.php
+│   ├── RestaurantController.php
+│   └── ProductController.php
+├── Models/
+│   ├── User.php
+│   ├── Restaurant.php
+│   ├── Branch.php
+│   ├── Category.php
+│   ├── Product.php
+│   ├── Slider.php
+│   └── Customer.php
+database/
+├── migrations/
+└── seeders/
+resources/
+├── views/
+│   ├── layouts/
+│   │   ├── public.blade.php
+│   │   ├── admin.blade.php
+│   │   └── owner.blade.php
+│   ├── home.blade.php
+│   ├── restaurants/
+│   │   └── menu.blade.php
+│   ├── products/
+│   │   └── show.blade.php
+│   ├── admin/
+│   └── owner/
+routes/
+└── web.php
+```
+
+## 🗄️ Veritabanı Yapısı
+
+### Ana Tablolar:
+
+- **users** - Kullanıcılar (Admin, İşletme Sahibi)
+- **restaurants** - Restoranlar
+- **branches** - Şubeler
+- **categories** - Ürün kategorileri (Admin tarafından tanımlanır)
+- **products** - Ürünler
+- **sliders** - Ana sayfa slider'ları
+- **customers** - Müşteri ziyaret kayıtları
+
+## 🚀 Özellikler ve Fonksiyonaliteler
+
+### Public Routes:
+- `GET /` - Ana sayfa (slider + restoran listesi)
+- `GET /restaurants/{restaurant}/menu` - Restoran menüsü
+- `GET /products/{product}` - Ürün detay sayfası
+
+### Admin Routes:
+- `GET /admin/dashboard` - Admin dashboard
+- Resource routes for: restaurants, categories, sliders, branches
+
+### Owner Routes:
+- `GET /owner/dashboard` - İşletme sahibi dashboard
+- Resource routes for: restaurants, products, branches
+- `GET /owner/qr/{restaurant}` - QR kod oluşturma
+
+## 🎯 Öne Çıkan Özellikler
+
+1. **Otomatik Kategorizasyon**: Kategorisi olmayan ürünler otomatik olarak "Diğer" kategorisine atanır
+2. **Abonelik Kontrolü**: Aboneliği bitmiş restoranlar otomatik olarak gizlenir
+3. **Şube Onay Sistemi**: İşletme sahipleri eklediği şubeler admin onayına düşer
+4. **QR Kod Desteği**: Her restoran için QR kod oluşturulabilir
+5. **Müşteri Takibi**: Siteye giren müşteriler otomatik kaydedilir
+
+## 📝 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır.
+
+## 🤝 Katkıda Bulunma
+
+Pull request'ler kabul edilir. Büyük değişiklikler için lütfen önce neyi değiştirmek istediğinizi tartışmak için bir issue açın.
+
+## 📧 İletişim
+
+Sorularınız için lütfen bir issue açın.
