@@ -21,6 +21,16 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])->name('restaurants.menu');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
+// Dashboard - redirect based on role
+Route::get('/dashboard', function () {
+    if (auth()->user()->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    } elseif (auth()->user()->hasRole('owner')) {
+        return redirect()->route('owner.dashboard');
+    }
+    return redirect()->route('home');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 // Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
