@@ -38,13 +38,51 @@
     </div>
     @endif
 
-    <!-- Restaurants Section -->
-    <div>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Restoranlar</h2>
+    <!-- Categories Section -->
+    @if($categories->count() > 0)
+    <div class="mb-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Kategoriler</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            @foreach($categories as $category)
+            <a href="{{ route('home') }}?category={{ $category->slug }}"
+               class="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow text-center group">
+                <div class="text-4xl mb-3">
+                    @if($category->slug === 'pizza')
+                        🍕
+                    @elseif($category->slug === 'burger')
+                        🍔
+                    @elseif($category->slug === 'kebap')
+                        🥙
+                    @elseif($category->slug === 'tatli')
+                        🍰
+                    @elseif($category->slug === 'icecek')
+                        🥤
+                    @elseif($category->slug === 'salata')
+                        🥗
+                    @elseif($category->slug === 'corba')
+                        🍲
+                    @elseif($category->slug === 'makarna')
+                        🍝
+                    @else
+                        🍽️
+                    @endif
+                </div>
+                <h3 class="font-bold text-gray-800 group-hover:text-orange-500 transition-colors">
+                    {{ $category->name }}
+                </h3>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
-        @if($restaurants->count() > 0)
+    <!-- Popular Restaurants Section -->
+    <div>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Popüler Restoranlar</h2>
+
+        @if($popularRestaurants->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($restaurants as $restaurant)
+            @foreach($popularRestaurants as $restaurant)
             <a href="{{ route('restaurants.menu', $restaurant) }}"
                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
                 @if($restaurant->logo)
@@ -65,9 +103,9 @@
 
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-500">
-                            {{ $restaurant->products->count() }} ürün
+                            {{ $restaurant->products_count }} ürün
                         </span>
-                        <span class="text-primary font-semibold">Menüyü Gör →</span>
+                        <span class="text-orange-500 font-semibold">Menüyü Gör →</span>
                     </div>
                 </div>
             </a>

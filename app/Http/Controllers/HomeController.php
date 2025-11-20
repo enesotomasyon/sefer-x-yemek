@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use App\Models\Slider;
 use App\Models\Customer;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -21,12 +22,17 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get();
 
-        // Aktif ve aboneliği geçerli restoranları getir
-        $restaurants = Restaurant::where('is_active', true)
+        // Kategorileri getir (order'a göre sıralı)
+        $categories = Category::orderBy('order')->get();
+
+        // Popüler restoranları getir (ürün sayısına göre)
+        $popularRestaurants = Restaurant::where('is_active', true)
             ->whereDate('subscription_end_date', '>=', now())
-            ->with('products')
+            ->withCount('products')
+            ->orderBy('products_count', 'desc')
+            ->limit(6)
             ->get();
 
-        return view('home', compact('sliders', 'restaurants'));
+        return view('home', compact('sliders', 'categories', 'popularRestaurants'));
     }
 }

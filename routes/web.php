@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\RestaurantController as AdminRestaurant;
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\SliderController as AdminSlider;
 use App\Http\Controllers\Admin\BranchController as AdminBranch;
+use App\Http\Controllers\Admin\OwnerController as AdminOwner;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboard;
 use App\Http\Controllers\Owner\RestaurantController as OwnerRestaurant;
 use App\Http\Controllers\Owner\ProductController as OwnerProduct;
@@ -18,8 +19,8 @@ use App\Http\Controllers\Owner\QRController;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'menu'])->name('restaurants.menu');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/{restaurant:slug}', [RestaurantController::class, 'menu'])->name('restaurants.menu');
 
 // Dashboard - redirect based on role
 Route::get('/dashboard', function () {
@@ -44,6 +45,7 @@ require __DIR__.'/auth.php';
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+    Route::resource('owners', AdminOwner::class);
     Route::resource('restaurants', AdminRestaurant::class);
     Route::resource('categories', AdminCategory::class);
     Route::resource('sliders', AdminSlider::class);

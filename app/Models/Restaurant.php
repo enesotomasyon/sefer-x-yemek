@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Restaurant extends Model
 {
     protected $fillable = [
         'owner_id',
         'name',
+        'slug',
         'description',
         'logo',
         'phone',
@@ -23,6 +25,40 @@ class Restaurant extends Model
             'subscription_end_date' => 'date',
             'is_active' => 'boolean',
         ];
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($restaurant) {
+            if (empty($restaurant->slug)) {
+                $slug = Str::slug($restaurant->name);
+                $count = 1;
+
+                // Benzersiz slug oluştur
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = Str::slug($restaurant->name) . '-' . $count;
+                    $count++;
+                }
+
+                $restaurant->slug = $slug;
+            }
+        });
+
+        static::updating(function ($restaurant) {
+            if ($restaurant->isDirty('name') && empty($restaurant->slug)) {
+                $slug = Str::slug($restaurant->name);
+                $count = 1;
+
+                while (static::where('slug', $slug)->where('id', '!=', $restaurant->id)->exists()) {
+                    $slug = Str::slug($restaurant->name) . '-' . $count;
+                    $count++;
+                }
+
+                $restaurant->slug = $slug;
+            }
+        });
     }
 
     public function owner()
