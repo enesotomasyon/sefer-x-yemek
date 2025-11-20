@@ -4,62 +4,91 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Restaurant;
+use App\Models\User;
 
 class RestaurantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $restaurants = Restaurant::with('owner')->latest()->paginate(10);
+        return view('admin.restaurants.index', compact('restaurants'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $owners = User::role('owner')->get();
+        return view('admin.restaurants.create', compact('owners'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'owner_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'logo' => 'nullable|image|max:2048',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'subscription_end_date' => 'required|date',
+            'is_active' => 'boolean',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('restaurants', 'public');
+        }
+
+        $validated['is_active'] = $request->has('is_active');
+
+        Restaurant::create($validated);
+
+        return redirect()->route('admin.restaurants.index')
+            ->with('success', 'Restoran başarıyla oluşturuldu.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Restaurant $restaurant)
     {
-        //
+        $owners = User::role('owner')->get();
+        return view('admin.restaurants.edit', compact('restaurant', 'owners'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Restaurant $restaurant)
     {
-        //
+        $validated = $request->validate([
+            'owner_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'logo' => 'nullable|image|max:2048',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'subscription_end_date' => 'required|date',
+            'is_active' => 'boolean',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            if ($restaurant->logo) {
+                \Storage::disk('public')->delete($restaurant->logo);
+            }
+            $validated['logo'] = $request->file('logo')->store('restaurants', 'public');
+        }
+
+        $validated['is_active'] = $request->has('is_active');
+
+        $restaurant->update($validated);
+
+        return redirect()->route('admin.restaurants.index')
+            ->with('success', 'Restoran başarıyla güncellendi.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Restaurant $restaurant)
     {
-        //
-    }
+        if ($restaurant->logo) {
+            \Storage::disk('public')->delete($restaurant->logo);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $restaurant->delete();
+
+        return redirect()->route('admin.restaurants.index')
+            ->with('success', 'Restoran başarıyla silindi.');
     }
 }
