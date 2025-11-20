@@ -4,62 +4,45 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Branch;
 
 class BranchController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $branches = Branch::with('restaurant.owner')
+            ->orderBy('is_approved')
+            ->latest()
+            ->paginate(15);
+
+        return view('admin.branches.index', compact('branches'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function approve(Branch $branch)
     {
-        //
+        $branch->update(['is_approved' => true]);
+
+        return redirect()->route('admin.branches.index')
+            ->with('success', 'Şube başarıyla onaylandı.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function reject(Branch $branch)
     {
-        //
+        $branch->delete();
+
+        return redirect()->route('admin.branches.index')
+            ->with('success', 'Şube başarıyla reddedildi ve silindi.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Branch $branch)
     {
-        //
-    }
+        $validated = $request->validate([
+            'is_approved' => 'required|boolean',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $branch->update($validated);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.branches.index')
+            ->with('success', 'Şube durumu güncellendi.');
     }
 }
