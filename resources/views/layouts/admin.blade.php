@@ -28,6 +28,11 @@
                    style="{{ request()->routeIs('admin.dashboard') ? 'border-color: var(--primary-orange);' : '' }}">
                     Dashboard
                 </a>
+                <a href="{{ route('admin.owners.index') }}"
+                   class="block px-6 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.owners.*') ? 'bg-gray-700 border-l-4' : '' }}"
+                   style="{{ request()->routeIs('admin.owners.*') ? 'border-color: var(--primary-orange);' : '' }}">
+                    İşletme Sahipleri
+                </a>
                 <a href="{{ route('admin.restaurants.index') }}"
                    class="block px-6 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.restaurants.*') ? 'bg-gray-700 border-l-4' : '' }}"
                    style="{{ request()->routeIs('admin.restaurants.*') ? 'border-color: var(--primary-orange);' : '' }}">
