@@ -11,7 +11,11 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $restaurantIds = auth()->user()->restaurants()->pluck('id');
+        $selectedRestaurantId = session('selected_restaurant_id');
+        $restaurantIds = $selectedRestaurantId
+            ? [$selectedRestaurantId]
+            : auth()->user()->restaurants()->pluck('id');
+
         $branches = Branch::whereIn('restaurant_id', $restaurantIds)
             ->with('restaurant')
             ->latest()

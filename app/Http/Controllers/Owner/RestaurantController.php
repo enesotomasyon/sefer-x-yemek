@@ -62,6 +62,7 @@ class RestaurantController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
+            'header_video' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime,video/webm|max:51200', // 50MB max
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
         ]);
@@ -71,6 +72,21 @@ class RestaurantController extends Controller
                 \Storage::disk('public')->delete($restaurant->logo);
             }
             $validated['logo'] = $request->file('logo')->store('restaurants', 'public');
+        }
+
+        if ($request->hasFile('header_video')) {
+            if ($restaurant->header_video) {
+                \Storage::disk('public')->delete($restaurant->header_video);
+            }
+            $validated['header_video'] = $request->file('header_video')->store('restaurants/videos', 'public');
+        }
+
+        // Handle video removal
+        if ($request->has('remove_video') && $request->remove_video) {
+            if ($restaurant->header_video) {
+                \Storage::disk('public')->delete($restaurant->header_video);
+            }
+            $validated['header_video'] = null;
         }
 
         $restaurant->update($validated);
@@ -87,6 +103,10 @@ class RestaurantController extends Controller
 
         if ($restaurant->logo) {
             \Storage::disk('public')->delete($restaurant->logo);
+        }
+
+        if ($restaurant->header_video) {
+            \Storage::disk('public')->delete($restaurant->header_video);
         }
 
         $restaurant->delete();

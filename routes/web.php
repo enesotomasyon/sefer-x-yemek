@@ -15,12 +15,11 @@ use App\Http\Controllers\Owner\DashboardController as OwnerDashboard;
 use App\Http\Controllers\Owner\RestaurantController as OwnerRestaurant;
 use App\Http\Controllers\Owner\ProductController as OwnerProduct;
 use App\Http\Controllers\Owner\BranchController as OwnerBranch;
+use App\Http\Controllers\Owner\CategoryImageController as OwnerCategoryImage;
 use App\Http\Controllers\Owner\QRController;
 
-// Public routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/{restaurant:slug}', [RestaurantController::class, 'menu'])->name('restaurants.menu');
+// Auth routes (must be before catch-all routes)
+require __DIR__.'/auth.php';
 
 // Dashboard - redirect based on role
 Route::get('/dashboard', function () {
@@ -39,8 +38,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Auth routes
-require __DIR__.'/auth.php';
+// Public routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Catch-all route for restaurant slugs (must be last)
+Route::get('/{restaurant:slug}', [RestaurantController::class, 'menu'])->name('restaurants.menu');
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -57,8 +60,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // Owner routes
 Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->group(function () {
     Route::get('/dashboard', [OwnerDashboard::class, 'index'])->name('dashboard');
+    Route::post('/select-restaurant', [OwnerDashboard::class, 'selectRestaurant'])->name('select-restaurant');
     Route::resource('restaurants', OwnerRestaurant::class);
     Route::resource('products', OwnerProduct::class);
+    Route::post('/products/bulk-update', [OwnerProduct::class, 'bulkUpdatePrices'])->name('products.bulk-update');
+    Route::post('/products/increase-percentage', [OwnerProduct::class, 'increaseByPercentage'])->name('products.increase-percentage');
     Route::resource('branches', OwnerBranch::class);
+    Route::get('/category-images', [OwnerCategoryImage::class, 'index'])->name('category-images.index');
+    Route::post('/category-images', [OwnerCategoryImage::class, 'store'])->name('category-images.store');
+    Route::delete('/category-images/{category}', [OwnerCategoryImage::class, 'destroy'])->name('category-images.destroy');
     Route::get('/qr/{restaurant}', [QRController::class, 'generate'])->name('qr.generate');
 });

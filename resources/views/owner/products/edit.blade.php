@@ -49,11 +49,19 @@
             <input type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-yellow-500">
             @error('price')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
+        <div class="mb-4">
+            <label class="inline-flex items-center">
+                <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-yellow-500">
+                <span class="ml-2 text-gray-700">Ürün Aktif</span>
+            </label>
+            <p class="text-xs text-gray-500 ml-7 mt-1">Aktif olmayan ürünler menüde gösterilmez</p>
+        </div>
         <div class="mb-6">
             <label class="inline-flex items-center">
-                <input type="checkbox" name="is_available" value="1" {{ old('is_available', $product->is_available) ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-yellow-500">
+                <input type="checkbox" name="in_stock" value="1" {{ old('in_stock', $product->in_stock) ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-yellow-500">
                 <span class="ml-2 text-gray-700">Stokta Mevcut</span>
             </label>
+            <p class="text-xs text-gray-500 ml-7 mt-1">Stokta olmayan ürünler menüde tükendi olarak işaretlenir</p>
         </div>
         <div class="flex items-center justify-between">
             <a href="{{ route('owner.products.index') }}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300">İptal</a>

@@ -4,27 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class RestaurantCategoryImage extends Model
 {
     protected $fillable = [
         'restaurant_id',
         'category_id',
-        'name',
-        'description',
-        'price',
         'image',
-        'is_active',
-        'in_stock',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'price' => 'decimal:2',
-            'is_active' => 'boolean',
-            'in_stock' => 'boolean',
-        ];
-    }
 
     public function restaurant()
     {

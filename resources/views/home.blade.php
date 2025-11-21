@@ -46,25 +46,29 @@
             @foreach($categories as $category)
             <a href="{{ route('home') }}?category={{ $category->slug }}"
                class="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow text-center group">
-                <div class="text-4xl mb-3">
+                <div class="text-5xl mb-3 text-orange-500 group-hover:text-orange-600 transition-colors">
                     @if($category->slug === 'pizza')
-                        🍕
+                        <i class="fas fa-pizza-slice"></i>
                     @elseif($category->slug === 'burger')
-                        🍔
+                        <i class="fas fa-burger"></i>
                     @elseif($category->slug === 'kebap')
-                        🥙
+                        <i class="fas fa-meat"></i>
                     @elseif($category->slug === 'tatli')
-                        🍰
+                        <i class="fas fa-cake-candles"></i>
                     @elseif($category->slug === 'icecek')
-                        🥤
+                        <i class="fas fa-glass-water"></i>
                     @elseif($category->slug === 'salata')
-                        🥗
+                        <i class="fas fa-bowl-food"></i>
                     @elseif($category->slug === 'corba')
-                        🍲
+                        <i class="fas fa-bowl-hot"></i>
                     @elseif($category->slug === 'makarna')
-                        🍝
+                        <i class="fas fa-plate-wheat"></i>
+                    @elseif(str_contains($category->slug, 'kahvalti'))
+                        <i class="fas fa-bacon"></i>
+                    @elseif(str_contains($category->slug, 'deniz'))
+                        <i class="fas fa-fish"></i>
                     @else
-                        🍽️
+                        <i class="fas fa-utensils"></i>
                     @endif
                 </div>
                 <h3 class="font-bold text-gray-800 group-hover:text-orange-500 transition-colors">

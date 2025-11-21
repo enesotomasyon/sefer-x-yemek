@@ -11,6 +11,7 @@ class Category extends Model
         'name',
         'slug',
         'order',
+        'image',
     ];
 
     protected static function boot()
@@ -27,5 +28,10 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function restaurantImages()
+    {
+        return $this->hasMany(RestaurantCategoryImage::class);
     }
 }

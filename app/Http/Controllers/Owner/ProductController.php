@@ -12,11 +12,20 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $restaurantIds = auth()->user()->restaurants()->pluck('id');
+        $selectedRestaurantId = session('selected_restaurant_id');
+        $restaurantIds = $selectedRestaurantId
+            ? [$selectedRestaurantId]
+            : auth()->user()->restaurants()->pluck('id');
+
+        // Get products grouped by category
         $products = Product::whereIn('restaurant_id', $restaurantIds)
             ->with(['restaurant', 'category'])
-            ->latest()
-            ->paginate(15);
+            ->orderBy('category_id')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(function($product) {
+                return $product->category ? $product->category->name : 'Kategorisiz';
+            });
 
         return view('owner.products.index', compact('products'));
     }
@@ -38,6 +47,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'in_stock' => 'boolean',
         ]);
 
         $restaurant = Restaurant::findOrFail($validated['restaurant_id']);
@@ -50,6 +60,7 @@ class ProductController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['in_stock'] = $request->has('in_stock');
 
         Product::create($validated);
 
@@ -82,6 +93,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'in_stock' => 'boolean',
         ]);
 
         $restaurant = Restaurant::findOrFail($validated['restaurant_id']);
@@ -97,6 +109,7 @@ class ProductController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['in_stock'] = $request->has('in_stock');
 
         $product->update($validated);
 
@@ -118,5 +131,51 @@ class ProductController extends Controller
 
         return redirect()->route('owner.products.index')
             ->with('success', 'Ürün başarıyla silindi.');
+    }
+
+    public function bulkUpdatePrices(Request $request)
+    {
+        $validated = $request->validate([
+            'prices' => 'required|array',
+            'prices.*' => 'required|numeric|min:0',
+        ]);
+
+        $selectedRestaurantId = session('selected_restaurant_id');
+        $restaurantIds = $selectedRestaurantId
+            ? [$selectedRestaurantId]
+            : auth()->user()->restaurants()->pluck('id');
+
+        foreach ($validated['prices'] as $productId => $price) {
+            $product = Product::find($productId);
+
+            if ($product && in_array($product->restaurant_id, $restaurantIds->toArray())) {
+                $product->update(['price' => $price]);
+            }
+        }
+
+        return redirect()->route('owner.products.index')
+            ->with('success', 'Fiyatlar başarıyla güncellendi.');
+    }
+
+    public function increaseByPercentage(Request $request)
+    {
+        $validated = $request->validate([
+            'percentage' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $selectedRestaurantId = session('selected_restaurant_id');
+        $restaurantIds = $selectedRestaurantId
+            ? [$selectedRestaurantId]
+            : auth()->user()->restaurants()->pluck('id');
+
+        $products = Product::whereIn('restaurant_id', $restaurantIds)->get();
+
+        foreach ($products as $product) {
+            $newPrice = $product->price * (1 + $validated['percentage'] / 100);
+            $product->update(['price' => $newPrice]);
+        }
+
+        return redirect()->route('owner.products.index')
+            ->with('success', "Tüm ürünlerin fiyatları %{$validated['percentage']} artırıldı.");
     }
 }

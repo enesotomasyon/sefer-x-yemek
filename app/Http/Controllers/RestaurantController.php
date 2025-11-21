@@ -15,15 +15,26 @@ class RestaurantController extends Controller
             abort(404, 'Bu restoran şu anda aktif değil.');
         }
 
-        // Kategorileri ve ürünleri getir
+        // Kategorileri ve ürünleri getir (aktif olanlar, stok durumuna bakılmaksızın)
         $categories = Category::orderBy('order')
-            ->with(['products' => function ($query) use ($restaurant) {
-                $query->where('restaurant_id', $restaurant->id)
-                    ->where('is_active', true);
-            }])
+            ->with([
+                'products' => function ($query) use ($restaurant) {
+                    $query->where('restaurant_id', $restaurant->id)
+                        ->where('is_active', true);
+                },
+                'restaurantImages' => function ($query) use ($restaurant) {
+                    $query->where('restaurant_id', $restaurant->id);
+                }
+            ])
             ->get()
             ->filter(function ($category) {
-                return $category->products->count() > 0;
+                // Kategori göster eğer:
+                // 1. Ürünü varsa
+                // 2. Veya resmi varsa (restaurant-specific veya default)
+                $hasProducts = $category->products->count() > 0;
+                $hasImage = $category->restaurantImages->count() > 0 || $category->image;
+
+                return $hasProducts || $hasImage;
             });
 
         // "Diğer" kategorisi yoksa oluştur

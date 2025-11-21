@@ -13,6 +13,7 @@ class Restaurant extends Model
         'slug',
         'description',
         'logo',
+        'header_video',
         'phone',
         'address',
         'subscription_end_date',
@@ -74,6 +75,11 @@ class Restaurant extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function categoryImages()
+    {
+        return $this->hasMany(RestaurantCategoryImage::class);
     }
 
     public function isSubscriptionActive()

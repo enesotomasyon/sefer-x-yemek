@@ -24,7 +24,12 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'order' => 'required|integer|min:0',
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('categories', 'public');
+        }
 
         Category::create($validated);
 
@@ -42,7 +47,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'order' => 'required|integer|min:0',
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($category->image) {
+                \Storage::disk('public')->delete($category->image);
+            }
+            $validated['image'] = $request->file('image')->store('categories', 'public');
+        }
 
         $category->update($validated);
 
@@ -56,6 +69,10 @@ class CategoryController extends Controller
         if ($category->slug === 'diger') {
             return redirect()->route('admin.categories.index')
                 ->with('error', '"Diğer" kategorisi silinemez.');
+        }
+
+        if ($category->image) {
+            \Storage::disk('public')->delete($category->image);
         }
 
         $category->delete();
