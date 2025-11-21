@@ -49,7 +49,7 @@
         </div>
         <div class="mb-4" id="externalLink" style="display: none;">
             <label class="block text-gray-700 text-sm font-bold mb-2">Dış Link (URL)</label>
-            <input type="url" name="link_id_external" value="{{ old('link_id_external', $slider->link_type === 'external' ? $slider->link_id : '') }}" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500" placeholder="https://example.com">
+            <input type="url" name="link_id_external" value="{{ old('link_id_external', $slider->link_type === 'external' ? $slider->external_url : '') }}" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-orange-500" placeholder="https://example.com">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Sıra *</label>

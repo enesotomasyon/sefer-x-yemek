@@ -28,13 +28,34 @@ class SliderController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'required|image|max:2048',
-            'link_type' => 'required|in:product,restaurant',
-            'link_id' => 'required|integer',
+            'link_type' => 'required|in:product,restaurant,external',
+            'link_id_restaurant' => 'nullable|integer|exists:restaurants,id',
+            'link_id_product' => 'nullable|integer|exists:products,id',
+            'link_id_external' => 'nullable|url',
             'order' => 'required|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
+        // Handle image upload
         $validated['image'] = $request->file('image')->store('sliders', 'public');
+
+        // Handle link_id and external_url based on link_type
+        if ($validated['link_type'] === 'restaurant') {
+            $validated['link_id'] = $request->input('link_id_restaurant');
+            $validated['external_url'] = null;
+        } elseif ($validated['link_type'] === 'product') {
+            $validated['link_id'] = $request->input('link_id_product');
+            $validated['external_url'] = null;
+        } elseif ($validated['link_type'] === 'external') {
+            $validated['link_id'] = null;
+            $validated['external_url'] = $request->input('link_id_external');
+        }
+
+        // Remove temporary fields
+        unset($validated['link_id_restaurant']);
+        unset($validated['link_id_product']);
+        unset($validated['link_id_external']);
+
         $validated['is_active'] = $request->has('is_active');
 
         Slider::create($validated);
@@ -55,18 +76,38 @@ class SliderController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|max:2048',
-            'link_type' => 'required|in:product,restaurant',
-            'link_id' => 'required|integer',
+            'link_type' => 'required|in:product,restaurant,external',
+            'link_id_restaurant' => 'nullable|integer|exists:restaurants,id',
+            'link_id_product' => 'nullable|integer|exists:products,id',
+            'link_id_external' => 'nullable|url',
             'order' => 'required|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
+        // Handle image upload
         if ($request->hasFile('image')) {
             if ($slider->image) {
                 \Storage::disk('public')->delete($slider->image);
             }
             $validated['image'] = $request->file('image')->store('sliders', 'public');
         }
+
+        // Handle link_id and external_url based on link_type
+        if ($validated['link_type'] === 'restaurant') {
+            $validated['link_id'] = $request->input('link_id_restaurant');
+            $validated['external_url'] = null;
+        } elseif ($validated['link_type'] === 'product') {
+            $validated['link_id'] = $request->input('link_id_product');
+            $validated['external_url'] = null;
+        } elseif ($validated['link_type'] === 'external') {
+            $validated['link_id'] = null;
+            $validated['external_url'] = $request->input('link_id_external');
+        }
+
+        // Remove temporary fields
+        unset($validated['link_id_restaurant']);
+        unset($validated['link_id_product']);
+        unset($validated['link_id_external']);
 
         $validated['is_active'] = $request->has('is_active');
 
