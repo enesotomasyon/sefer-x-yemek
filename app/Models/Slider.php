@@ -11,6 +11,7 @@ class Slider extends Model
         'image',
         'link_type',
         'link_id',
+        'external_url',
         'order',
         'is_active',
     ];
@@ -28,6 +29,8 @@ class Slider extends Model
             return route('products.show', $this->link_id);
         } elseif ($this->link_type === 'restaurant' && $this->link_id) {
             return route('restaurants.menu', $this->link_id);
+        } elseif ($this->link_type === 'external' && $this->external_url) {
+            return $this->external_url;
         }
         return '#';
     }
