@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary-orange: #e84e0f;
-            --primary-yellow: #f7a600;
+            --primary-orange: #181818;
+            --primary-yellow: #181818;
             --bg-main: #f5f5f5;
             --text-main: #181818;
             --sidebar-bg: #ffffff;
@@ -91,6 +91,11 @@
                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg mb-1 border-l-4 border-transparent {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
                     <i class="fas fa-images w-5"></i>
                     <span>Slider Yönetimi</span>
+                </a>
+                <a href="{{ route('admin.settings.index') }}"
+                   class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg mb-1 border-l-4 border-transparent {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Site Ayarları</span>
                 </a>
                 <a href="{{ route('admin.branches.index') }}"
                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg mb-1 border-l-4 border-transparent {{ request()->routeIs('admin.branches.*') ? 'active' : '' }}">

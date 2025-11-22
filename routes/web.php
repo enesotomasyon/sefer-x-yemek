@@ -5,12 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurant;
 use App\Http\Controllers\Admin\CategoryController as AdminCategory;
 use App\Http\Controllers\Admin\SliderController as AdminSlider;
 use App\Http\Controllers\Admin\BranchController as AdminBranch;
 use App\Http\Controllers\Admin\OwnerController as AdminOwner;
+use App\Http\Controllers\Admin\SettingsController as AdminSettings;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboard;
 use App\Http\Controllers\Owner\RestaurantController as OwnerRestaurant;
 use App\Http\Controllers\Owner\ProductController as OwnerProduct;
@@ -41,6 +43,7 @@ Route::middleware('auth')->group(function () {
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 
 // Catch-all route for restaurant slugs (must be last)
 Route::get('/{restaurant:slug}', [RestaurantController::class, 'menu'])->name('restaurants.menu');
@@ -55,6 +58,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('branches', AdminBranch::class)->only(['index', 'update']);
     Route::post('/branches/{branch}/approve', [AdminBranch::class, 'approve'])->name('branches.approve');
     Route::post('/branches/{branch}/reject', [AdminBranch::class, 'reject'])->name('branches.reject');
+    Route::get('/settings', [AdminSettings::class, 'index'])->name('settings.index');
+    Route::post('/settings', [AdminSettings::class, 'update'])->name('settings.update');
+    Route::delete('/settings/logo', [AdminSettings::class, 'deleteLogo'])->name('settings.deleteLogo');
+    Route::delete('/settings/video', [AdminSettings::class, 'deleteVideo'])->name('settings.deleteVideo');
 });
 
 // Owner routes

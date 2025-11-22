@@ -62,7 +62,7 @@ class RestaurantController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
-            'header_video' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime,video/webm|max:51200', // 50MB max
+            'header_video' => 'nullable|mimetypes:video/mp4,video/mpeg,video/quicktime,video/webm|max:20480', // 20MB max
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
         ]);

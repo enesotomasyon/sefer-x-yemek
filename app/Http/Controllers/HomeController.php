@@ -7,6 +7,7 @@ use App\Models\Restaurant;
 use App\Models\Slider;
 use App\Models\Customer;
 use App\Models\Category;
+use App\Models\Setting;
 
 class HomeController extends Controller
 {
@@ -30,9 +31,12 @@ class HomeController extends Controller
             ->whereDate('subscription_end_date', '>=', now())
             ->withCount('products')
             ->orderBy('products_count', 'desc')
-            ->limit(6)
+            ->limit(36)
             ->get();
 
-        return view('home', compact('sliders', 'categories', 'popularRestaurants'));
+        // Tanıtım videosunu getir
+        $introVideo = Setting::get('intro_video');
+
+        return view('home', compact('sliders', 'categories', 'popularRestaurants', 'introVideo'));
     }
 }

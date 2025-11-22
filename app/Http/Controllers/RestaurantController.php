@@ -28,13 +28,8 @@ class RestaurantController extends Controller
             ])
             ->get()
             ->filter(function ($category) {
-                // Kategori göster eğer:
-                // 1. Ürünü varsa
-                // 2. Veya resmi varsa (restaurant-specific veya default)
-                $hasProducts = $category->products->count() > 0;
-                $hasImage = $category->restaurantImages->count() > 0 || $category->image;
-
-                return $hasProducts || $hasImage;
+                // Sadece ürünü olan kategorileri göster (resim olup olmadığına bakma)
+                return $category->products->count() > 0;
             });
 
         // "Diğer" kategorisi yoksa oluştur
